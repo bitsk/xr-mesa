@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/evlaV/deckard-mesa.git",
+  "commit": "8aa73b4b194d3bb14a617e0f4976057a2436128c",
+  "default_patch": "A081 split KMS/display ownership",
+  "optional_patches_applied": false,
+  "device_validated": false,
+  "history": "complete upstream ancestry fetched"
+}

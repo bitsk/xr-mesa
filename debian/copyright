@@ -1,0 +1,9 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: xr-mesa
+Source: https://gitee.com/bigbits/xr-mesa
+
+Files: *
+Copyright: See original source file and license notices
+License: MIT
+ See the repository license files and individual file headers.
+ Third-party notices and licenses remain applicable.

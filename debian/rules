@@ -1,0 +1,11 @@
+#!/usr/bin/make -f
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+%:
+	dh $@ --buildsystem=meson
+override_dh_auto_configure:
+	dh_auto_configure -- --prefix=/usr --libdir=lib/$$(dpkg-architecture -qDEB_HOST_MULTIARCH)/xr-mesa -Dgallium-drivers=[] -Dvulkan-drivers=freedreno -Dfreedreno-kmds=msm -Dplatforms=[] -Dglx=disabled -Dgles1=disabled -Dgles2=disabled -Ddraw-use-llvm=false -Dgallium-va=disabled -Dgallium-rusticl=false -Dvideo-codecs=[] -Dtools=[] -Dvulkan-layers=[] -Dvalgrind=disabled -Dlibunwind=disabled -Degl=disabled -Dgbm=disabled -Dopengl=false -Dllvm=disabled -Dbuild-tests=false
+override_dh_auto_install:
+	dh_auto_install --destdir=debian/tmp
+	python3 packaging/private-icd.py debian/tmp
+override_dh_makeshlibs:
+	true

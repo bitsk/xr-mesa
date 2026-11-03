@@ -1,0 +1,6 @@
+{
+  "repository": "https://github.com/evlaV/deckard-mesa.git",
+  "commit": "8aa73b4b194d3bb14a617e0f4976057a2436128c",
+  "maintenance": "independent patch stack; genuine upstream history restored in prepared source",
+  "patch_series": "patches/series"
+}
