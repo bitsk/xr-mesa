@@ -1,3 +1,9 @@
+mesa-xr (26.3.0+xr2) unstable; urgency=medium
+
+  * Build the accepted private ICD with explicit cross-toolchain inputs.
+
+ -- bits <bigbits@hackx.cc>  Thu, 12 Nov 2026 20:14:46 +0800
+
 mesa-xr (26.3.0+xr1) unstable; urgency=medium
 
   * Import independently maintained XR component and packaging.
