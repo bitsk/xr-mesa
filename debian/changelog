@@ -1,3 +1,9 @@
+mesa-xr (26.3.0+xr3) unstable; urgency=medium
+
+  * Give the ARM64 private ICD a stable architecture name for installed profiles.
+
+ -- bits <bigbits@hackx.cc>  Fri, 13 Nov 2026 10:43:24 +0800
+
 mesa-xr (26.3.0+xr2) unstable; urgency=medium
 
   * Build the accepted private ICD with explicit cross-toolchain inputs.
