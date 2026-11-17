@@ -5,20 +5,20 @@ Subject: [PATCH] freedreno: add explicit A081 display and render device
  separation
 
 ---
- src/freedreno/vulkan/tu_a081_display.h | 122 +++++++++++++++++++++++++
+ src/freedreno/vulkan/tu_a081_display.h | 145 +++++++++++++++++++++++++++++
  src/freedreno/vulkan/tu_device.h       |   1 +
  src/freedreno/vulkan/tu_knl.cc         |  26 +++++-
  src/freedreno/vulkan/tu_wsi.cc         |  14 +++
  src/vulkan/wsi/wsi_common_display.c    |  55 ++++++++---
- 5 files changed, 204 insertions(+), 14 deletions(-)
+ 5 files changed, 227 insertions(+), 14 deletions(-)
  create mode 100644 src/freedreno/vulkan/tu_a081_display.h
 
 diff --git a/src/freedreno/vulkan/tu_a081_display.h b/src/freedreno/vulkan/tu_a081_display.h
 new file mode 100644
-index 00000000000..8d0c952e47c
+index 00000000000..41cb2db01cb
 --- /dev/null
 +++ b/src/freedreno/vulkan/tu_a081_display.h
-@@ -0,0 +1,122 @@
+@@ -0,0 +1,145 @@
 +/* SPDX-License-Identifier: MIT */
 +#ifndef TU_A081_DISPLAY_H
 +#define TU_A081_DISPLAY_H
@@ -32,21 +32,44 @@ index 00000000000..8d0c952e47c
 +#include <xf86drm.h>
 +#include <xf86drmMode.h>
 +
-+/* Explicit A081-only selection of the real, separate mainline KMS device.
++static inline bool
++tu_a081_display_device_supported(void)
++{
++   char model[256] = {};
++   FILE *file = fopen("/proc/device-tree/model", "r");
++   if (file) {
++      size_t length = fread(model, 1, sizeof(model) - 1, file);
++      fclose(file);
++      if (length && strstr(model, "A081"))
++         return true;
++   }
++
++   /* DT compatible is a NUL-separated list, not a model substring. */
++   char compatible[256];
++   file = fopen("/proc/device-tree/compatible", "r");
++   if (!file)
++      return false;
++   size_t length = fread(compatible, 1, sizeof(compatible), file);
++   fclose(file);
++   for (size_t offset = 0; offset < length;) {
++      const char *entry = compatible + offset;
++      const char *end = (const char *)memchr(entry, '\0', length - offset);
++      if (!end)
++         break;
++      if (!strcmp(entry, "iqiyi,vr700"))
++         return true;
++      offset += end - entry + 1;
++   }
++   return false;
++}
++
++/* Explicit supported-board selection of the real, separate mainline KMS device.
 + * Rendering and synchronization remain on the existing MSM render node.
 + */
 +static inline int
 +tu_a081_display_open(const char *path)
 +{
-+   char model[256] = {};
-+   FILE *file = fopen("/proc/device-tree/model", "r");
-+   if (!file) {
-+      errno = ENODEV;
-+      return -1;
-+   }
-+   size_t length = fread(model, 1, sizeof(model) - 1, file);
-+   fclose(file);
-+   if (!length || !strstr(model, "A081") || !path || path[0] != '/') {
++   if (!tu_a081_display_device_supported() || !path || path[0] != '/') {
 +      errno = ENODEV;
 +      return -1;
 +   }
