@@ -1,0 +1,28 @@
+From 2c7f1fae21ee6b44df8e5a81401974462f9dd029 Mon Sep 17 00:00:00 2001
+From: bits <bigbits@hackx.cc>
+Date: Tue, 3 Nov 2026 15:42:26 +0800
+Subject: [PATCH] freedreno: expose normalized R8G8 fragment density maps
+
+The CPU fragment density path already unpacks normalized channels from internally linear mapped images. Advertise R8G8_UNORM so runtimes can use their two-channel density maps through the existing implementation.
+---
+ src/freedreno/vulkan/tu_formats.cc | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/freedreno/vulkan/tu_formats.cc b/src/freedreno/vulkan/tu_formats.cc
+index cf7243d..6f68082 100644
+--- a/src/freedreno/vulkan/tu_formats.cc
++++ b/src/freedreno/vulkan/tu_formats.cc
+@@ -229,7 +229,9 @@ tu_physical_device_get_format_properties(
+        * to use, which means two channels and not something weird like
+        * luminance-alpha.
+        */
+-      if (vk_format_is_float(vk_format) && desc->nr_channels == 2 &&
++      /* The CPU unpack path also handles normalized R8G8 density maps. */
++      if ((vk_format_is_float(vk_format) || vk_format == VK_FORMAT_R8G8_UNORM) &&
++          desc->nr_channels == 2 &&
+           desc->swizzle[0] == PIPE_SWIZZLE_X &&
+           desc->swizzle[1] == PIPE_SWIZZLE_Y) {
+          optimal |= VK_FORMAT_FEATURE_2_FRAGMENT_DENSITY_MAP_BIT_EXT;
+-- 
+2.53.0
+

@@ -1,3 +1,10 @@
+mesa-xr (26.3.0+xr5) unstable; urgency=medium
+
+  * Advertise normalized two-channel fragment density maps supported by
+    the existing linear CPU unpack path; retain explicit application opt-in.
+
+ -- bits <bigbits@hackx.cc>  Wed, 18 Nov 2026 23:59:38 +0800
+
 mesa-xr (26.3.0+xr4) unstable; urgency=medium
 
   * Enable Vulkan Wayland presentation for installed desktop XR sessions.
